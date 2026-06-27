@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al Rugaib — Target Tracker · Procurement Alignment</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --navy:    #0D1B2A;
+  --navy2:   #1A2F45;
+  --navy3:   #243B55;
+  --gold:    #C8963E;
+  --gold2:   #E8B86D;
+  --gold3:   #FFF3DC;
+  --white:   #FFFFFF;
+  --surface: #F7F8FA;
+  --border:  #E2E8F0;
+  --slate:   #64748B;
+  --slate2:  #94A3B8;
+  --red:     #C0392B;
+  --red2:    #E74C3C;
+  --red-lt:  #FEF2F2;
+  --amber:   #D97706;
+  --amb-lt:  #FFFBEB;
+  --green:   #15803D;
+  --grn-lt:  #F0FDF4;
+  --blue:    #1D4ED8;
+  --blu-lt:  #EFF6FF;
+  --input-bg:#FEFCE8;
+  --input-br:#D97706;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: var(--surface); color: var(--navy); min-height: 100vh; }
+
+/* ── TOP BAR ── */
+.topbar {
+  background: var(--navy);
+  border-bottom: 3px solid var(--gold);
+  padding: 0 32px;
+  display: flex; align-items: stretch; justify-content: space-between;
+  height: 56px; position: sticky; top: 0; z-index: 100;
+}
+.topbar-brand { display: flex; align-items: center; gap: 14px; }
+.logo-mark {
+  width: 34px; height: 34px; background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Crimson Pro', serif; font-weight: 600;
+  font-size: 15px; color: var(--navy); flex-shrink: 0;
+}
+.topbar-title  { color: var(--white); font-size: 13px; font-weight: 600; }
+.topbar-sub    { color: var(--gold2); font-size: 10px; font-family: 'JetBrains Mono', monospace; margin-top: 1px; }
+.topbar-actions { display: flex; align-items: center; gap: 10px; }
+.topbar-date { color: var(--slate); font-size: 11px; font-family: 'JetBrains Mono', monospace; }
+
+/* ── TABS ── */
+.tab-nav {
+  background: var(--navy2);
+  display: flex; padding: 0 32px; gap: 0;
+  border-bottom: 1px solid var(--navy3);
+}
+.tab-btn {
+  padding: 0 22px; height: 44px;
+  border: none; background: transparent; cursor: pointer;
+  font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+  color: var(--slate2); display: flex; align-items: center; gap: 8px;
+  border-bottom: 2px solid transparent; transition: all 0.15s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--white); }
+.tab-btn.active { color: var(--gold2); border-bottom-color: var(--gold); }
+.tab-icon { font-size: 14px; }
+.tab-badge {
+  background: var(--gold); color: var(--navy);
+  font-size: 9px; font-weight: 700; padding: 1px 5px;
+  border-radius: 8px; line-height: 14px;
+}
+
+/* ── PANELS ── */
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* ── SLIDE DECK PANEL ── */
+.deck-wrap { padding: 28px 32px; max-width: 1100px; margin: 0 auto; }
+.slide-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 20px; }
+
+.slide-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px; overflow: hidden;
+  transition: box-shadow 0.15s;
+}
+.slide-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+
+.slide-thumb {
+  aspect-ratio: 16/9;
+  display: flex; flex-direction: column;
+  padding: 22px 24px; position: relative; overflow: hidden;
+}
+.slide-thumb.dark  { background: var(--navy); }
+.slide-thumb.light { background: var(--white); border-bottom: 1px solid var(--border); }
+.slide-thumb.grey  { background: var(--surface); border-bottom: 1px solid var(--border); }
+
+.slide-num {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--gold2); margin-bottom: 8px; letter-spacing: 1px;
+}
+.slide-num.dark-text { color: var(--slate2); }
+.slide-h { font-family: 'Crimson Pro', serif; font-weight: 600; }
+.slide-h.lg { font-size: 22px; color: var(--white); line-height: 1.2; }
+.slide-h.md { font-size: 18px; color: var(--navy); line-height: 1.25; }
+.slide-h.gold { font-size: 22px; color: var(--gold); line-height: 1.2; }
+.slide-sub { font-size: 11px; color: var(--slate2); margin-top: 6px; font-style: italic; line-height: 1.4; }
+.slide-sub.light-text { color: var(--gold2); }
+
+/* Gap bars */
+.gap-bars { margin-top: 10px; display: flex; flex-direction: column; gap: 6px; }
+.gap-bar-row { display: flex; align-items: center; gap: 6px; }
+.gap-bar-label { font-size: 9px; font-weight: 600; width: 40px; flex-shrink: 0; color: var(--navy); }
+.gap-bar-track { flex: 1; height: 16px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.gap-bar-fill { height: 100%; border-radius: 2px; display: flex; align-items: center; padding-left: 6px; }
+.gap-bar-val { font-size: 8px; font-weight: 700; color: var(--white); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+.gap-bar-red { background: var(--red); }
+.gap-bar-blue { background: #1A6B9A; }
+
+/* Scenario cards mini */
+.mini-scenarios { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px; margin-top: 10px; }
+.mini-sc { border-radius: 4px; padding: 8px; text-align: center; }
+.mini-sc .arrow { font-size: 16px; font-weight: 700; }
+.mini-sc .val { font-family: 'Crimson Pro', serif; font-size: 16px; font-weight: 600; line-height: 1.1; margin-top: 2px; }
+.mini-sc .lbl { font-size: 8px; color: var(--slate); margin-top: 2px; }
+
+/* Decision cards mini */
+.mini-decisions { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 8px; }
+.mini-dec { background: var(--white); border-radius: 4px; padding: 7px 8px; border: 1px solid var(--border); }
+.mini-dec-num { display: inline-block; background: var(--gold); color: var(--navy); font-size: 9px; font-weight: 700; width: 18px; height: 18px; border-radius: 3px; text-align: center; line-height: 18px; margin-bottom: 3px; }
+.mini-dec-title { font-size: 9px; font-weight: 600; color: var(--navy); line-height: 1.3; }
+.mini-dec-risk { font-size: 8px; color: var(--red); font-style: italic; margin-top: 2px; }
+
+/* Double jeopardy slide */
+.mini-mechanic { display: grid; grid-template-columns: 1fr auto 1fr; gap: 6px; align-items: center; margin-top: 10px; }
+.mech-card { border-radius: 4px; padding: 8px; }
+.mech-card.blue { background: #EBF5FB; }
+.mech-card.amber { background: var(--amb-lt); }
+.mech-plus { font-size: 22px; font-weight: 700; color: var(--gold); text-align: center; }
+.mech-title { font-family: 'Crimson Pro', serif; font-size: 14px; font-weight: 600; color: var(--navy); }
+.mech-sub { font-size: 8px; color: var(--slate); margin-top: 3px; line-height: 1.4; }
+.tier-pill { display: inline-block; background: var(--white); border: 1px solid var(--border); border-radius: 3px; font-size: 8px; padding: 2px 5px; margin-top: 2px; font-family: 'JetBrains Mono', monospace; }
+
+/* Accountability table mini */
+.mini-table { margin-top: 10px; font-size: 8px; width: 100%; border-collapse: collapse; }
+.mini-table th { background: var(--navy); color: var(--white); padding: 4px 6px; font-weight: 600; text-align: left; font-size: 7px; }
+.mini-table td { padding: 3px 6px; border-bottom: 1px solid var(--border); }
+.mini-table tr:nth-child(even) td { background: var(--surface); }
+.mini-table .gap-row td { background: var(--red-lt); color: var(--red); font-weight: 600; }
+.pill { display: inline-block; padding: 1px 5px; border-radius: 8px; font-size: 7px; font-weight: 600; }
+.pill-red   { background: var(--red-lt); color: var(--red); }
+.pill-gold  { background: var(--gold3); color: var(--amber); }
+.pill-green { background: var(--grn-lt); color: var(--green); }
+
+/* Timeline slide */
+.mini-timeline { position: relative; margin: 12px 0 8px; }
+.tl-line { position: absolute; top: 12px; left: 0; right: 0; height: 2px; background: var(--border); }
+.tl-events { display: flex; justify-content: space-between; position: relative; }
+.tl-event { display: flex; flex-direction: column; align-items: center; }
+.tl-dot { width: 14px; height: 14px; border-radius: 50%; z-index: 1; }
+.tl-dot.gold { background: var(--gold); }
+.tl-dot.red  { background: var(--red); }
+.tl-dot.blue { background: #1A6B9A; }
+.tl-date { font-size: 7px; font-weight: 700; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+.tl-label { font-size: 7px; color: var(--slate); text-align: center; margin-top: 1px; max-width: 55px; }
+.tl-warn { background: var(--red-lt); border-radius: 3px; padding: 4px 8px; font-size: 8px; font-weight: 600; color: var(--red); text-align: center; }
+
+/* Close slide */
+.close-items { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.close-item { display: flex; gap: 8px; align-items: flex-start; }
+.close-num { width: 20px; height: 20px; background: var(--gold); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--navy); flex-shrink: 0; }
+.close-text { font-size: 10px; color: var(--white); }
+.close-sub  { font-size: 9px; color: #7A9BC0; margin-top: 2px; font-style: italic; }
+
+.slide-meta { padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; }
+.slide-title-row { font-size: 11px; font-weight: 600; color: var(--navy); }
+.slide-note { font-size: 9px; color: var(--slate2); margin-top: 2px; font-style: italic; }
+.slide-expand-btn {
+  font-size: 10px; background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 4px 10px; cursor: pointer; color: var(--slate);
+  font-family: 'Inter', sans-serif; white-space: nowrap;
+}
+.slide-expand-btn:hover { background: var(--border); }
+
+/* ── GAP TRACKER PANEL ── */
+.tracker-wrap { padding: 24px 32px; }
+.section-block { margin-bottom: 32px; }
+.section-hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 16px; border-radius: 6px 6px 0 0;
+  margin-bottom: 0;
+}
+.section-hdr.red    { background: var(--red); }
+.section-hdr.blue   { background: #1A6B9A; }
+.section-hdr.green  { background: #15803D; }
+.section-hdr.amber  { background: #92400E; }
+.section-hdr h3 { font-size: 12px; font-weight: 700; color: var(--white); text-transform: uppercase; letter-spacing: 0.8px; }
+.section-hdr p  { font-size: 10px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+.section-badge { font-size: 10px; background: rgba(255,255,255,0.2); color: var(--white); padding: 2px 8px; border-radius: 10px; font-weight: 600; white-space: nowrap; }
+
+/* Editable table */
+.edit-table-wrap { overflow-x: auto; border: 1px solid var(--border); border-top: none; border-radius: 0 0 6px 6px; }
+.edit-table { width: 100%; border-collapse: collapse; font-size: 11px; min-width: 900px; }
+.edit-table th {
+  background: var(--navy2); color: var(--white);
+  padding: 9px 12px; text-align: left; font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap;
+  position: sticky; top: 0;
+}
+.edit-table td { padding: 0; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.edit-table tr:last-child td { border-bottom: none; }
+.edit-table tr:hover td { background: #F8FAFF; }
+.edit-table tr.gap-row td { background: var(--red-lt) !important; }
+
+.cell-static {
+  padding: 8px 12px; font-size: 11px; color: var(--navy);
+  white-space: normal; line-height: 1.4;
+}
+.cell-static.bold { font-weight: 600; }
+.cell-static.mono { font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+.cell-static.muted { color: var(--slate); font-style: italic; font-size: 10px; }
+.cell-static.red   { color: var(--red); font-weight: 600; }
+
+.pri-badge { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 9px; font-weight: 700; }
+.pri-critical { background: var(--red-lt); color: var(--red); }
+.pri-high     { background: var(--amb-lt); color: var(--amber); }
+.pri-medium   { background: var(--blu-lt); color: var(--blue); }
+
+/* Input cells */
+.cell-input { padding: 4px 6px; }
+.cell-input input, .cell-input textarea, .cell-input select {
+  width: 100%; background: var(--input-bg);
+  border: 1px solid var(--input-br); border-radius: 4px;
+  padding: 6px 8px; font-family: 'Inter', sans-serif; font-size: 11px;
+  color: var(--navy); outline: none; resize: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.cell-input input:focus, .cell-input textarea:focus, .cell-input select:focus {
+  border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.15);
+  background: #FFFDF5;
+}
+.cell-input input::placeholder, .cell-input textarea::placeholder { color: var(--slate2); font-size: 10px; }
+.cell-input select { cursor: pointer; }
+
+.status-select { min-width: 90px; }
+
+/* Summary bar */
+.summary-bar {
+  background: var(--navy); border-radius: 6px; padding: 14px 20px;
+  display: flex; gap: 32px; margin-bottom: 24px; flex-wrap: wrap;
+}
+.summary-item { display: flex; flex-direction: column; gap: 3px; }
+.summary-label { font-size: 9px; font-weight: 600; color: var(--slate2); text-transform: uppercase; letter-spacing: 0.8px; }
+.summary-val   { font-size: 18px; font-weight: 700; color: var(--white); font-family: 'JetBrains Mono', monospace; }
+.summary-sub   { font-size: 9px; color: var(--slate2); }
+.summary-divider { width: 1px; background: var(--navy3); align-self: stretch; }
+
+/* ── ACTIONS PANEL ── */
+.actions-wrap { padding: 24px 32px; }
+.action-row { display: flex; gap: 12px; align-items: flex-start; padding: 12px 14px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border); background: var(--white); }
+.action-row:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.action-row.critical { border-left: 3px solid var(--red); }
+.action-row.high     { border-left: 3px solid var(--amber); }
+.action-row.medium   { border-left: 3px solid var(--blue); }
+.action-left { flex: 1; min-width: 0; }
+.action-title { font-size: 12px; font-weight: 600; color: var(--navy); line-height: 1.4; }
+.action-sub   { font-size: 10px; color: var(--slate); margin-top: 3px; line-height: 1.4; }
+.action-right { display: flex; flex-direction: column; gap: 6px; min-width: 280px; }
+.action-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.field-label { font-size: 9px; font-weight: 600; color: var(--slate2); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
+.field-input {
+  width: 100%; padding: 5px 8px; border: 1px solid var(--input-br);
+  border-radius: 4px; background: var(--input-bg); font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--navy); outline: none;
+}
+.field-input:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(200,150,62,0.15); }
+.field-select {
+  width: 100%; padding: 5px 8px; border: 1px solid var(--input-br);
+  border-radius: 4px; background: var(--input-bg); font-family: 'Inter', sans-serif;
+  font-size: 11px; color: var(--navy); cursor: pointer; outline: none;
+}
+.field-select:focus { border-color: var(--gold); }
+
+/* Section group header for actions */
+.actions-section-hdr { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--slate); margin: 20px 0 8px; display: flex; align-items: center; gap: 8px; }
+.actions-section-hdr::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── BUTTONS ── */
+.btn { padding: 8px 16px; border: none; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; display: inline-flex; align-items: center; gap: 6px; transition: all 0.15s; }
+.btn-gold    { background: var(--gold); color: var(--navy); }
+.btn-gold:hover { background: var(--gold2); }
+.btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); }
+.btn-outline:hover { background: rgba(255,255,255,0.08); }
+.btn-sm { padding: 5px 10px; font-size: 11px; }
+.btn-navy { background: var(--navy2); color: var(--white); }
+.btn-navy:hover { background: var(--navy3); }
+
+/* Save toast */
+.toast { position: fixed; bottom: 24px; right: 24px; background: var(--green); color: var(--white); padding: 10px 18px; border-radius: 6px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 16px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 200; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* Progress meter */
+.progress-wrap { margin-bottom: 20px; }
+.progress-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--slate); margin-bottom: 6px; }
+.progress-track { background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 3px; background: var(--gold); transition: width 0.4s; }
+
+/* Print hint */
+.print-hint { font-size: 10px; color: var(--slate2); text-align: center; padding: 16px; border-top: 1px solid var(--border); }
+
+@media print {
+  .topbar, .tab-nav, .topbar-actions, .slide-expand-btn, .btn, .print-hint { display: none !important; }
+  .tab-panel { display: block !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="logo-mark">AR</div>
+    <div>
+      <div class="topbar-title">Target Tracker  ·  Procurement Alignment</div>
+      <div class="topbar-sub">Al Rugaib Furniture  ·  E-Commerce Division  ·  Confidential  ·  June 2026</div>
+    </div>
+  </div>
+  <div class="topbar-actions">
+    <span class="topbar-date" id="dateLabel"></span>
+    <button class="btn btn-outline btn-sm" onclick="saveAll()">💾 Save Progress</button>
+    <button class="btn btn-gold btn-sm" onclick="exportData()">↓ Export</button>
+  </div>
+</div>
+
+<!-- TAB NAV -->
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('deck', this)">
+    <span class="tab-icon">▶</span> Presentation Deck
+    <span class="tab-badge">8 slides</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('tracker', this)">
+    <span class="tab-icon">⬜</span> Gap Tracker
+    <span class="tab-badge">Fill in</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('actions', this)">
+    <span class="tab-icon">✓</span> Actions Required
+    <span class="tab-badge" id="actionBadge">14</span>
+  </button>
+</div>
+
+<!-- ══════════════ TAB 1: DECK ══════════════ -->
+<div class="tab-panel active" id="panel-deck">
+<div class="deck-wrap">
+  <div class="slide-grid">
+
+    <!-- SLIDE 1 -->
+    <div class="slide-card">
+      <div class="slide-thumb dark">
+        <div class="slide-num">SLIDE 01  ·  COVER</div>
+        <div class="slide-h gold" style="margin-top:auto">TARGET<br>TRACKER</div>
+        <div class="slide-sub light-text">Procurement Alignment Session  ·  June 2026</div>
+        <div style="margin-top:12px;font-size:11px;color:#7A9BC0;line-height:1.5">
+          How do we close <strong style="color:var(--gold2)">SAR 36.7M</strong> in 27 weeks?
+        </div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">The Opening Question</div><div class="slide-note">Let the gap number sit for 2 seconds before continuing.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide-card">
+      <div class="slide-thumb grey">
+        <div class="slide-num dark-text">SLIDE 02  ·  THE GAP</div>
+        <div class="slide-h md">Three owners. One unallocated gap.</div>
+        <div class="gap-bars">
+          <div class="gap-bar-row"><span class="gap-bar-label" style="color:#1A6B9A">Alaa</span><div class="gap-bar-track"><div class="gap-bar-fill gap-bar-blue" style="width:62%"><span class="gap-bar-val">SAR 34M</span></div></div></div>
+          <div class="gap-bar-row"><span class="gap-bar-label" style="color:#1A6B9A">Hakim</span><div class="gap-bar-track"><div class="gap-bar-fill gap-bar-blue" style="width:76%"><span class="gap-bar-val">SAR 39.5M</span></div></div></div>
+          <div class="gap-bar-row"><span class="gap-bar-label" style="color:#1A6B9A">Rawan</span><div class="gap-bar-track"><div class="gap-bar-fill gap-bar-blue" style="width:19%"><span class="gap-bar-val">SAR 9.8M</span></div></div></div>
+          <div class="gap-bar-row"><span class="gap-bar-label" style="color:var(--red)">GAP</span><div class="gap-bar-track"><div class="gap-bar-fill gap-bar-red" style="width:85%"><span class="gap-bar-val">SAR 36.7M · No owner</span></div></div></div>
+        </div>
+        <div style="margin-top:8px;background:var(--navy);border-radius:3px;padding:5px 8px;font-size:9px;color:var(--gold2);font-weight:600">SAR 120M target = SAR 83.3M allocated + SAR 36.7M unallocated</div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">The Target Picture</div><div class="slide-note">Show it. Don't explain it. Ask who owns the red bar.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide-card">
+      <div class="slide-thumb light">
+        <div class="slide-num dark-text">SLIDE 03  ·  SCENARIOS</div>
+        <div class="slide-h md">Where We Land Without Additional Levers</div>
+        <div class="mini-scenarios" style="margin-top:10px">
+          <div class="mini-sc" style="background:var(--red-lt)">
+            <div class="arrow" style="color:var(--red)">↓</div>
+            <div class="val" style="color:var(--red)">SAR 95.9M</div>
+            <div class="lbl">Run-rate only<br><strong>SAR 24.1M to close</strong></div>
+          </div>
+          <div class="mini-sc" style="background:var(--amb-lt)">
+            <div class="arrow" style="color:var(--amber)">→</div>
+            <div class="val" style="color:var(--amber)">SAR 107M</div>
+            <div class="lbl">Tabby + Sep 23<br><strong>SAR 13M to close</strong></div>
+          </div>
+          <div class="mini-sc" style="background:var(--grn-lt)">
+            <div class="arrow" style="color:var(--green)">↑</div>
+            <div class="val" style="color:var(--green)">SAR 120M+</div>
+            <div class="lbl">All levers firing<br><strong>Target secured ✓</strong></div>
+          </div>
+        </div>
+        <div style="margin-top:8px;font-size:9px;font-weight:600;color:var(--navy);text-align:center;padding:4px;background:var(--surface);border-radius:3px">The difference = 4 decisions in this room</div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">Three Scenarios</div><div class="slide-note">Not asking for miracles. Asking for structured decisions.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide-card">
+      <div class="slide-thumb grey">
+        <div class="slide-num dark-text">SLIDE 04  ·  4 DECISIONS</div>
+        <div class="slide-h md" style="color:var(--red)">4 Decisions Needed Before July 17</div>
+        <div style="font-size:9px;color:var(--red);font-style:italic;margin:4px 0 6px">These physically block the July 24 launch</div>
+        <div class="mini-decisions">
+          <div class="mini-dec"><div class="mini-dec-num">01</div><div class="mini-dec-title">Tabby Commercial Terms</div><div class="mini-dec-risk">Without: can't confirm P&L-positive</div></div>
+          <div class="mini-dec"><div class="mini-dec-num">02</div><div class="mini-dec-title">Cashback Budget Envelope</div><div class="mini-dec-risk">Without: can't commit to tiers</div></div>
+          <div class="mini-dec"><div class="mini-dec-num">03</div><div class="mini-dec-title">Online-Exclusive SKU List</div><div class="mini-dec-risk">Without: showroom can pause campaign</div></div>
+          <div class="mini-dec"><div class="mini-dec-num">04</div><div class="mini-dec-title">Showroom Parallel Offer</div><div class="mini-dec-risk">Without: management escalation risk</div></div>
+        </div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">Pre-Launch Gate</div><div class="slide-note">Get a name + date for each card before leaving the room.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide-card">
+      <div class="slide-thumb light">
+        <div class="slide-num dark-text">SLIDE 05  ·  CAMPAIGN</div>
+        <div class="slide-h md">Double Jeopardy Mechanic · Jul 24–Aug 2</div>
+        <div class="mini-mechanic">
+          <div class="mech-card blue">
+            <div class="mech-title">Tabby BNPL</div>
+            <div class="mech-sub">6-month 0% installment<br>Online ONLY — not on showroom POS</div>
+            <div class="tier-pill">SAR 12K = SAR 2K/mo</div>
+          </div>
+          <div class="mech-plus">+</div>
+          <div class="mech-card amber">
+            <div class="mech-title">Tiered Cashback</div>
+            <div class="mech-sub">Store credit only — not redeemable offline</div>
+            <div class="tier-pill">10K → 10%</div>
+            <div class="tier-pill" style="margin-left:2px">20K → 20%</div>
+            <div class="tier-pill" style="margin-left:2px">50K → 25%</div>
+          </div>
+        </div>
+        <div style="font-size:8px;font-style:italic;color:var(--slate);margin-top:6px">Store credit = showroom objection answer. Not cash. Not redeemable offline.</div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">The Campaign</div><div class="slide-note">Cashback in store credit kills the showroom argument structurally.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide-card">
+      <div class="slide-thumb grey">
+        <div class="slide-num dark-text">SLIDE 06  ·  ACCOUNTABILITY</div>
+        <div class="slide-h md">Shared Accountability Model</div>
+        <table class="mini-table">
+          <thead><tr><th>Function</th><th>Target</th><th>Deadline</th></tr></thead>
+          <tbody>
+            <tr><td>Alaa</td><td class="mono">SAR 34M</td><td><span class="pill pill-green">Now</span></td></tr>
+            <tr><td>Hakim</td><td class="mono">SAR 39.5M</td><td><span class="pill pill-green">Now</span></td></tr>
+            <tr><td>Rawan</td><td class="mono">SAR 9.8M+</td><td><span class="pill pill-gold">Jul 31</span></td></tr>
+            <tr class="gap-row"><td>Procurement VP</td><td class="mono">SAR 36.7M gap</td><td><span class="pill pill-red">Jul 17</span></td></tr>
+            <tr><td>Fulfillment</td><td class="mono">Delivery rate</td><td><span class="pill pill-gold">Aug 15</span></td></tr>
+            <tr><td>E-Commerce</td><td class="mono">All channels</td><td><span class="pill pill-green">Ongoing</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">Who Owns What</div><div class="slide-note">Leave with an owner + date for every row in this table.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7 -->
+    <div class="slide-card">
+      <div class="slide-thumb light">
+        <div class="slide-num dark-text">SLIDE 07  ·  TIMELINE</div>
+        <div class="slide-h md">Decision & Action Timeline</div>
+        <div class="mini-timeline">
+          <div class="tl-line"></div>
+          <div class="tl-events" style="margin-top:0">
+            <div class="tl-event"><div class="tl-dot gold"></div><div class="tl-date" style="color:var(--gold)">Now</div><div class="tl-label">Vendor tag clean-up</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-date" style="color:var(--red)">Jul 17</div><div class="tl-label">4 decisions confirmed</div></div>
+            <div class="tl-event"><div class="tl-dot gold"></div><div class="tl-date" style="color:var(--gold)">Jul 24</div><div class="tl-label">Tabby Launch</div></div>
+            <div class="tl-event"><div class="tl-dot blue"></div><div class="tl-date" style="color:#1A6B9A">Aug 1</div><div class="tl-label">Marketplace submit</div></div>
+            <div class="tl-event"><div class="tl-dot blue"></div><div class="tl-date" style="color:#1A6B9A">Aug 15</div><div class="tl-label">Fulfillment targets</div></div>
+            <div class="tl-event"><div class="tl-dot red"></div><div class="tl-date" style="color:var(--red)">Sep 23</div><div class="tl-label">National Day</div></div>
+          </div>
+        </div>
+        <div class="tl-warn">⚠ Pre-order 90-day window closes Oct 2 — orders after this date will NOT deliver in 2026</div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">Critical Path</div><div class="slide-note">Point to Oct 2. Nobody has been watching this date.</div></div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8 -->
+    <div class="slide-card">
+      <div class="slide-thumb dark">
+        <div class="slide-num">SLIDE 08  ·  CLOSE</div>
+        <div style="margin-top:4px;font-size:13px;font-weight:600;color:var(--white)">We need to leave today with:</div>
+        <div class="close-items" style="margin-top:8px">
+          <div class="close-item"><div class="close-num">01</div><div><div class="close-text">Owner + date for the 4 pre-launch decisions</div><div class="close-sub">Tabby · cashback budget · SKU list · showroom offer</div></div></div>
+          <div class="close-item"><div class="close-num">02</div><div><div class="close-text">Agreed allocation for the SAR 36.7M gap</div><div class="close-sub">To channel owners or a new E-Commerce budget line</div></div></div>
+          <div class="close-item"><div class="close-num">03</div><div><div class="close-text">Fulfillment targets assigned + review meeting set</div><div class="close-sub">Cart recovery · return rate · delivery SLA</div></div></div>
+          <div class="close-item"><div class="close-num">04</div><div><div class="close-text">Go / No-Go on Tabby campaign July 24</div><div class="close-sub">Fill the Gap Tracker tab — return by July 10</div></div></div>
+        </div>
+      </div>
+      <div class="slide-meta">
+        <div><div class="slide-title-row">What We Need Today</div><div class="slide-note">Hand over this file. Ask them to fill Tab 2 and Tab 3.</div></div>
+      </div>
+    </div>
+
+  </div><!-- /slide-grid -->
+  <div class="print-hint">Presentation deck — 8 slides · 25 minutes · Leave Tabs 2 and 3 open for Procurement to complete</div>
+</div>
+</div>
+
+<!-- ══════════════ TAB 2: GAP TRACKER ══════════════ -->
+<div class="tab-panel" id="panel-tracker">
+<div class="tracker-wrap">
+
+  <div class="summary-bar">
+    <div class="summary-item"><div class="summary-label">Full Year Target</div><div class="summary-val">SAR 120M</div><div class="summary-sub">Stretch target</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Owner Targets Sum</div><div class="summary-val">SAR 83.3M</div><div class="summary-sub">Alaa + Hakim + Rawan</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Unallocated Gap</div><div class="summary-val" style="color:#E57373">SAR 36.7M</div><div class="summary-sub">No owner assigned</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Campaign Launch</div><div class="summary-val" style="color:var(--gold2)">Jul 24</div><div class="summary-sub">Tabby + Cashback</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Decisions Due</div><div class="summary-val" style="color:#E57373">Jul 17</div><div class="summary-sub">4 critical items</div></div>
+    <div style="margin-left:auto;display:flex;align-items:center">
+      <button class="btn btn-gold" onclick="saveAll()">💾 Save All Inputs</button>
+    </div>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-label"><span>Completion Progress</span><span id="progressPct">0% filled</span></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+
+  <!-- SECTION A: 4 PRE-LAUNCH DECISIONS -->
+  <div class="section-block">
+    <div class="section-hdr red">
+      <div><h3>Section A — 4 Pre-Launch Decisions</h3><p>Required by July 17 · These 4 items physically block the July 24 campaign launch</p></div>
+      <span class="section-badge">CRITICAL</span>
+    </div>
+    <div class="edit-table-wrap">
+      <table class="edit-table">
+        <thead><tr>
+          <th style="width:30px">#</th>
+          <th style="width:200px">Decision Required</th>
+          <th style="width:120px">Owner</th>
+          <th style="width:180px">Procurement Answer / Input</th>
+          <th style="width:180px">Recommendation from Procurement</th>
+          <th style="width:90px">Agreed?</th>
+          <th style="width:90px">Date Agreed</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><div class="cell-static bold" style="color:var(--gold)">01</div></td>
+            <td><div class="cell-static">Tabby merchant fee — who absorbs the 6-month installment cost per transaction and what is the fee structure?</div></td>
+            <td><div class="cell-static muted">Procurement VP</div></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Enter Tabby fee structure and cost owner..." id="a1_ans"></textarea></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Any recommendation on fee absorption model..." id="a1_rec"></textarea></td>
+            <td class="cell-input"><select class="status-select" id="a1_agreed"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><input type="date" id="a1_date"></td>
+          </tr>
+          <tr><td><div class="cell-static bold" style="color:var(--gold)">02</div></td>
+            <td><div class="cell-static">Cashback budget envelope — approved SAR amount for 10% / 20% / 25% tiers across Jul 24–Aug 2</div></td>
+            <td><div class="cell-static muted">Procurement VP</div></td>
+            <td class="cell-input"><textarea rows="2" placeholder="SAR budget approved per tier..." id="a2_ans"></textarea></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Any constraints on budget allocation..." id="a2_rec"></textarea></td>
+            <td class="cell-input"><select class="status-select" id="a2_agreed"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><input type="date" id="a2_date"></td>
+          </tr>
+          <tr><td><div class="cell-static bold" style="color:var(--gold)">03</div></td>
+            <td><div class="cell-static">Online-exclusive SKU approval — which brands and categories are formally ring-fenced for online-only promotions?</div></td>
+            <td><div class="cell-static muted">Procurement VP</div></td>
+            <td class="cell-input"><textarea rows="2" placeholder="List of approved brands / categories..." id="a3_ans"></textarea></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Brands recommended for exclusion or inclusion..." id="a3_rec"></textarea></td>
+            <td class="cell-input"><select class="status-select" id="a3_agreed"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><input type="date" id="a3_date"></td>
+          </tr>
+          <tr><td><div class="cell-static bold" style="color:var(--gold)">04</div></td>
+            <td><div class="cell-static">Showroom parallel offer — agreed offline equivalent mechanic to prevent showroom escalation during campaign window</div></td>
+            <td><div class="cell-static muted">Procurement VP + Sales</div></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Agreed offline offer (e.g. free delivery + installation on SAR 15K+)..." id="a4_ans"></textarea></td>
+            <td class="cell-input"><textarea rows="2" placeholder="Any constraints from showroom team..." id="a4_rec"></textarea></td>
+            <td class="cell-input"><select class="status-select" id="a4_agreed"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><input type="date" id="a4_date"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION B: TARGET ALLOCATION -->
+  <div class="section-block">
+    <div class="section-hdr blue">
+      <div><h3>Section B — Target Allocation</h3><p>Required by July 31 · Formal owner for the SAR 36.7M unallocated gap</p></div>
+      <span class="section-badge">CRITICAL</span>
+    </div>
+    <div class="edit-table-wrap">
+      <table class="edit-table">
+        <thead><tr>
+          <th>Channel Owner</th>
+          <th>Current Target (SAR)</th>
+          <th>Procurement-Confirmed 2026 Target</th>
+          <th>Additional Uplift Available?</th>
+          <th>Online-Exclusive Budget (SAR)</th>
+          <th>Agreed?</th>
+          <th>Notes / Constraints</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><div class="cell-static bold">Alaa</div></td>
+            <td><div class="cell-static mono">34,000,000</div></td>
+            <td class="cell-input"><input type="text" placeholder="SAR amount" id="b1_tgt"></td>
+            <td class="cell-input"><select id="b1_upl"><option value="">—</option><option>Yes</option><option>No</option><option>Limited</option></select></td>
+            <td class="cell-input"><input type="text" placeholder="SAR online budget" id="b1_onl"></td>
+            <td class="cell-input"><select id="b1_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Notes..." id="b1_note"></textarea></td>
+          </tr>
+          <tr><td><div class="cell-static bold">Hakim</div></td>
+            <td><div class="cell-static mono">39,500,000</div></td>
+            <td class="cell-input"><input type="text" placeholder="SAR amount" id="b2_tgt"></td>
+            <td class="cell-input"><select id="b2_upl"><option value="">—</option><option>Yes</option><option>No</option><option>Limited</option></select></td>
+            <td class="cell-input"><input type="text" placeholder="SAR online budget" id="b2_onl"></td>
+            <td class="cell-input"><select id="b2_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Notes..." id="b2_note"></textarea></td>
+          </tr>
+          <tr><td><div class="cell-static bold">Rawan</div></td>
+            <td><div class="cell-static mono">9,768,613</div></td>
+            <td class="cell-input"><input type="text" placeholder="SAR amount" id="b3_tgt"></td>
+            <td class="cell-input"><select id="b3_upl"><option value="">—</option><option>Yes</option><option>No</option><option>Limited</option></select></td>
+            <td class="cell-input"><input type="text" placeholder="SAR online budget" id="b3_onl"></td>
+            <td class="cell-input"><select id="b3_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Notes..." id="b3_note"></textarea></td>
+          </tr>
+          <tr class="gap-row"><td><div class="cell-static bold red">UNALLOCATED GAP</div></td>
+            <td><div class="cell-static mono red">36,731,387</div></td>
+            <td class="cell-input"><input type="text" placeholder="Who owns this?" id="b4_tgt" style="border-color:var(--red)"></td>
+            <td class="cell-input"><select id="b4_upl"><option value="">—</option><option>Allocate to Alaa</option><option>Allocate to Hakim</option><option>Allocate to Rawan</option><option>New E-comm budget line</option><option>Split across owners</option></select></td>
+            <td class="cell-input"><input type="text" placeholder="Online-exclusive allocation" id="b4_onl"></td>
+            <td class="cell-input"><select id="b4_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="How gap is resolved..." id="b4_note"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION C: FULFILLMENT TARGETS -->
+  <div class="section-block">
+    <div class="section-hdr green">
+      <div><h3>Section C — Fulfillment & Operations Targets</h3><p>Required by August 15 · E-Commerce generates orders — Fulfillment converts them to delivered revenue</p></div>
+      <span class="section-badge">HIGH</span>
+    </div>
+    <div class="edit-table-wrap">
+      <table class="edit-table">
+        <thead><tr>
+          <th style="width:200px">Metric</th>
+          <th style="width:140px">Current Baseline</th>
+          <th style="width:160px">2026 Target (set here)</th>
+          <th style="width:120px">Owner</th>
+          <th style="width:100px">Review Cadence</th>
+          <th style="width:80px">Agreed?</th>
+          <th>Notes</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="cell-static bold">Abandoned cart recovery rate</div></td>
+            <td><div class="cell-static muted">Unknown — 96% of viewers never add to cart (GA4)</div></td>
+            <td class="cell-input"><input type="text" placeholder="Target % to recover" id="c1_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c1_own"></td>
+            <td class="cell-input"><select id="c1_cad"><option value="">—</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select></td>
+            <td class="cell-input"><select id="c1_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="SLA for first contact after abandonment..." id="c1_note"></textarea></td>
+          </tr>
+          <tr>
+            <td><div class="cell-static bold">Return rate — blended</div></td>
+            <td><div class="cell-static muted">Unknown — pull from Dynamics</div></td>
+            <td class="cell-input"><input type="text" placeholder="Target % per category" id="c2_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c2_own"></td>
+            <td class="cell-input"><select id="c2_cad"><option value="">—</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select></td>
+            <td class="cell-input"><select id="c2_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder=">7% for 60 days triggers 23% vendor commission..." id="c2_note"></textarea></td>
+          </tr>
+          <tr>
+            <td><div class="cell-static bold">Return recovery rate</div></td>
+            <td><div class="cell-static muted">Unknown</div></td>
+            <td class="cell-input"><input type="text" placeholder="% resold at full price" id="c3_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c3_own"></td>
+            <td class="cell-input"><select id="c3_cad"><option value="">—</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select></td>
+            <td class="cell-input"><select id="c3_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="vs markdown vs auction split..." id="c3_note"></textarea></td>
+          </tr>
+          <tr>
+            <td><div class="cell-static bold">Pre-order cancellation rate</div></td>
+            <td><div class="cell-static muted">Unknown — 60-120 day lead times</div></td>
+            <td class="cell-input"><input type="text" placeholder="Target cancellation %" id="c4_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c4_own"></td>
+            <td class="cell-input"><select id="c4_cad"><option value="">—</option><option>Daily</option><option>Weekly</option><option>Monthly</option></select></td>
+            <td class="cell-input"><select id="c4_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Proactive comms SLA to customer during lead time..." id="c4_note"></textarea></td>
+          </tr>
+          <tr>
+            <td><div class="cell-static bold">Delivery SLA — in-stock</div></td>
+            <td><div class="cell-static muted">Assumed 7-14 days</div></td>
+            <td class="cell-input"><input type="text" placeholder="Confirmed days by category" id="c5_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c5_own"></td>
+            <td class="cell-input"><select id="c5_cad"><option value="">—</option><option>N/A</option><option>Quarterly review</option></select></td>
+            <td class="cell-input"><select id="c5_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Category exceptions (bulky, installation-required)..." id="c5_note"></textarea></td>
+          </tr>
+          <tr>
+            <td><div class="cell-static bold">Delivery SLA — pre-order by brand</div></td>
+            <td><div class="cell-static muted">Assumed 60-120 days</div></td>
+            <td class="cell-input"><input type="text" placeholder="Ashley: X wks / Roots: Y wks..." id="c6_tgt"></td>
+            <td class="cell-input"><input type="text" placeholder="Owner name" id="c6_own"></td>
+            <td class="cell-input"><select id="c6_cad"><option value="">—</option><option>N/A</option><option>Quarterly review</option></select></td>
+            <td class="cell-input"><select id="c6_agr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+            <td class="cell-input"><textarea rows="1" placeholder="Brand-level SLA breakdown..." id="c6_note"></textarea></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- SECTION D: PRODUCT & BUNDLING -->
+  <div class="section-block">
+    <div class="section-hdr amber">
+      <div><h3>Section D — Product, Bundling & Cross-Sell</h3><p>Required by August 1 · Feeds Tabby campaign product list, National Day bundles, and PDP cross-sell modules</p></div>
+      <span class="section-badge">HIGH</span>
+    </div>
+    <div class="edit-table-wrap">
+      <table class="edit-table">
+        <thead><tr>
+          <th>Brand / Category</th>
+          <th>Tabby Tier</th>
+          <th>Margin Floor OK?</th>
+          <th>GWP Item Suggestion</th>
+          <th>Top Upsell Pair</th>
+          <th>Approved?</th>
+          <th>Notes from Procurement</th>
+        </tr></thead>
+        <tbody id="bundlingRows">
+          <!-- Rows injected by JS -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ TAB 3: ACTIONS ══════════════ -->
+<div class="tab-panel" id="panel-actions">
+<div class="actions-wrap">
+
+  <div class="summary-bar" style="margin-bottom:16px">
+    <div class="summary-item"><div class="summary-label">Total Actions</div><div class="summary-val">14</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Critical</div><div class="summary-val" style="color:#E57373">5</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">High</div><div class="summary-val" style="color:var(--gold2)">5</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Medium</div><div class="summary-val" style="color:#93C5FD">4</div></div>
+    <div class="summary-divider"></div>
+    <div class="summary-item"><div class="summary-label">Completed</div><div class="summary-val" id="completedCount" style="color:#86EFAC">0</div></div>
+    <div style="margin-left:auto;display:flex;align-items:center">
+      <button class="btn btn-gold" onclick="saveAll()">💾 Save All</button>
+    </div>
+  </div>
+
+  <div id="actionsContainer"></div>
+  <div class="print-hint">Return this file to E-Commerce lead by July 10, 2026</div>
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Progress saved</div>
+
+<script>
+// ── DATA ───────────────────────────────────────────────────────
+const BUNDLING_BRANDS = [
+  { brand:'Caracole',          tier:'SAR 50K+ (25% CB)', note:'Classic flagship pieces' },
+  { brand:'Ashley Homestore',  tier:'SAR 10K+ (10% CB)', note:'Full bedroom + sectionals' },
+  { brand:'Roots Furniture',   tier:'SAR 10K+ (10% CB)', note:'Living room complete sets' },
+  { brand:'Hooker',            tier:'SAR 10K+ (10% CB)', note:'Study/office premium' },
+  { brand:'A.R.T. Furniture',  tier:'SAR 10K+ (10% CB)', note:'Bedroom accent + dining' },
+  { brand:"Moe's Home",        tier:'SAR 10K+ (10% CB)', note:'Living room hero pieces' },
+  { brand:'Al Rugaib Brand',   tier:'SAR 20K+ (20% CB)', note:'Own catalog high-value' },
+  { brand:'Magnussen',         tier:'SAR 10K+ (10% CB)', note:'Bedroom + living sets' },
+  { brand:'Bernhardt',         tier:'SAR 20K+ (20% CB)', note:'Premium upholstery' },
+];
+
+const ACTIONS = [
+  { id:'act1',  pri:'CRITICAL', deadline:'Jul 10', dept:'Procurement', title:'Confirm Tabby merchant fee structure and who absorbs the cost', sub:'Written confirmation of fee + cost owner required before campaign brief can be finalised' },
+  { id:'act2',  pri:'CRITICAL', deadline:'Jul 10', dept:'Procurement', title:'Approve cashback budget envelope for Jul 24–Aug 2 campaign', sub:'SAR amount approved per tier (10% / 20% / 25%). Signed budget or email confirmation.' },
+  { id:'act3',  pri:'CRITICAL', deadline:'Jul 10', dept:'Procurement', title:'Provide list of brands / categories approved for online-exclusive promotions', sub:'Approved brand list with Procurement backing — this is the showroom objection document.' },
+  { id:'act4',  pri:'CRITICAL', deadline:'Jul 10', dept:'Procurement + Sales', title:'Agree showroom parallel offer mechanic for campaign duration', sub:'Recommend: free delivery + installation on SAR 15K+ offline orders. Shared with showroom managers.' },
+  { id:'act5',  pri:'CRITICAL', deadline:'Jul 17', dept:'Procurement', title:'Formally allocate SAR 36.7M unallocated gap to owner(s) or E-Commerce budget line', sub:'Updated target file with formal gap allocation. This closes the accountability gap in the tracker.' },
+  { id:'act6',  pri:'HIGH',     deadline:'Jul 14', dept:'Procurement', title:'Provide margin floor % per brand for Tabby campaign product list', sub:'Minimum net margin % per brand that discount + cashback combined cannot breach.' },
+  { id:'act7',  pri:'HIGH',     deadline:'Aug 1',  dept:'E-comm + Procurement', title:'Submit approved SKUs to Amazon / Noon for National Day deal program', sub:'National Day Sep 23 deal submission deadline is approximately Aug 10. Start now.' },
+  { id:'act8',  pri:'HIGH',     deadline:'Aug 15', dept:'Fulfillment / CRM', title:'Confirm abandoned cart recovery rate target and outreach SLA', sub:'Target % of abandoned carts to be contacted within 24 hours of abandonment.' },
+  { id:'act9',  pri:'HIGH',     deadline:'Aug 15', dept:'Operations', title:'Confirm return rate target per category and weekly reporting cadence', sub:'Current baseline unknown. Penalty triggers at >7% for 60 days = 23% vendor commission.' },
+  { id:'act10', pri:'HIGH',     deadline:'Aug 15', dept:'Fulfillment', title:'Confirm delivery SLA by category (in-stock and pre-order by brand)', sub:'Needed to build accurate Shopify-to-delivered conversion model in the weekly tracker.' },
+  { id:'act11', pri:'MEDIUM',   deadline:'Aug 1',  dept:'Procurement', title:'Provide GWP-eligible items per category with cost values and thresholds', sub:'E.g. Buy Ashley bedroom SAR 8K+ → free pillow set / bedside lamp.' },
+  { id:'act12', pri:'MEDIUM',   deadline:'Aug 1',  dept:'Category Managers', title:'Confirm top 5 upsell pairs per major category from showroom data', sub:'Sofa → rug / bed → mattress / dining → buffet. Feeds PDP cross-sell module.' },
+  { id:'act13', pri:'MEDIUM',   deadline:'Sep 1',  dept:'Procurement', title:'Set whitelabel fast-track trigger threshold (SAR sales / SKU / month)', sub:'Mechanism defined. Number not set. E-Commerce flags candidates, Procurement owns decision.' },
+  { id:'act14', pri:'MEDIUM',   deadline:'Sep 1',  dept:'Procurement', title:'Confirm 2026 AOV target per channel (D2C, Amazon, Noon, Baytonia)', sub:'Current D2C AOV ~SAR 2,400. Tabby campaign targets SAR 10K+ tier.' },
+];
+
+// ── TAB SWITCHING ──────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── BUILD BUNDLING ROWS ────────────────────────────────────────
+function buildBundlingRows() {
+  const tbody = document.getElementById('bundlingRows');
+  BUNDLING_BRANDS.forEach((b, i) => {
+    const bg = i % 2 === 0 ? '' : 'style="background:var(--surface)"';
+    tbody.innerHTML += `
+    <tr ${bg}>
+      <td><div class="cell-static bold">${b.brand}</div><div class="cell-static muted" style="padding-top:0">${b.note}</div></td>
+      <td><div class="cell-static mono">${b.tier}</div></td>
+      <td class="cell-input"><select id="d${i}_mgn"><option value="">—</option><option>Yes</option><option>No</option><option>Check needed</option></select></td>
+      <td class="cell-input"><textarea rows="2" placeholder="Suggested GWP item + cost..." id="d${i}_gwp"></textarea></td>
+      <td class="cell-input"><textarea rows="2" placeholder="Primary → add-on pair..." id="d${i}_ups"></textarea></td>
+      <td class="cell-input"><select id="d${i}_apr"><option value="">—</option><option>Yes</option><option>No</option><option>Pending</option></select></td>
+      <td class="cell-input"><textarea rows="2" placeholder="Procurement notes..." id="d${i}_note"></textarea></td>
+    </tr>`;
+  });
+}
+
+// ── BUILD ACTIONS ──────────────────────────────────────────────
+function buildActions() {
+  const container = document.getElementById('actionsContainer');
+  let currentPri = '';
+  ACTIONS.forEach(a => {
+    if (a.pri !== currentPri) {
+      currentPri = a.pri;
+      const labels = { CRITICAL:'Critical — Blocks Campaign Launch', HIGH:'High Priority', MEDIUM:'Medium — Add Post-Launch' };
+      container.innerHTML += `<div class="actions-section-hdr"><span class="pri-badge pri-${a.pri.toLowerCase()}">${a.pri}</span> ${labels[a.pri]}</div>`;
+    }
+    container.innerHTML += `
+    <div class="action-row ${a.pri.toLowerCase()}" id="row_${a.id}">
+      <div class="action-left">
+        <div class="action-title">${a.title}</div>
+        <div class="action-sub">${a.sub}</div>
+        <div style="margin-top:6px;display:flex;gap:8px;font-size:10px">
+          <span style="color:var(--slate2)">Dept: <strong style="color:var(--navy)">${a.dept}</strong></span>
+          <span style="color:var(--slate2)">Due: <strong style="color:var(--red)">${a.deadline}</strong></span>
+        </div>
+      </div>
+      <div class="action-right">
+        <div class="action-fields">
+          <div>
+            <div class="field-label">Responsible Person</div>
+            <input class="field-input" type="text" placeholder="Name..." id="${a.id}_owner">
+          </div>
+          <div>
+            <div class="field-label">Date Committed</div>
+            <input class="field-input" type="date" id="${a.id}_date">
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Status</div>
+          <select class="field-select" id="${a.id}_status" onchange="updateCounts()">
+            <option value="">Not started</option>
+            <option value="in_progress">In Progress</option>
+            <option value="done">Completed ✓</option>
+            <option value="blocked">Blocked</option>
+          </select>
+        </div>
+        <div>
+          <div class="field-label">Deliverable / Output</div>
+          <input class="field-input" type="text" placeholder="What will be delivered..." id="${a.id}_output">
+        </div>
+      </div>
+    </div>`;
+  });
+}
+
+// ── PROGRESS TRACKING ──────────────────────────────────────────
+function updateProgress() {
+  const allInputs = document.querySelectorAll('#panel-tracker input, #panel-tracker textarea, #panel-tracker select');
+  let filled = 0, total = 0;
+  allInputs.forEach(inp => {
+    if (inp.type === 'hidden') return;
+    total++;
+    if (inp.value && inp.value.trim() && inp.value !== '') filled++;
+  });
+  const pct = total > 0 ? Math.round(filled/total*100) : 0;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressPct').textContent = `${pct}% filled (${filled} of ${total} fields)`;
+}
+
+function updateCounts() {
+  const done = ACTIONS.filter(a => {
+    const el = document.getElementById(a.id + '_status');
+    return el && el.value === 'done';
+  }).length;
+  document.getElementById('completedCount').textContent = done;
+  document.getElementById('actionBadge').textContent = ACTIONS.length - done + ' open';
+}
+
+// ── STORAGE ────────────────────────────────────────────────────
+function collectAllData() {
+  const data = {};
+  document.querySelectorAll('input[id], textarea[id], select[id]').forEach(el => {
+    if (el.value) data[el.id] = el.value;
+  });
+  return data;
+}
+
+function restoreData(data) {
+  Object.entries(data).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
+async function saveAll() {
+  const data = collectAllData();
+  try {
+    await window.storage.set('procurement_alignment_data', JSON.stringify(data));
+  } catch(e) {
+    // fallback: sessionStorage
+    try { sessionStorage.setItem('procurement_alignment_data', JSON.stringify(data)); } catch(e2) {}
+  }
+  updateProgress();
+  updateCounts();
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+async function loadSaved() {
+  let data = null;
+  try {
+    const r = await window.storage.get('procurement_alignment_data');
+    if (r) data = JSON.parse(r.value);
+  } catch(e) {
+    try { const s = sessionStorage.getItem('procurement_alignment_data'); if (s) data = JSON.parse(s); } catch(e2) {}
+  }
+  if (data) restoreData(data);
+}
+
+// ── EXPORT ─────────────────────────────────────────────────────
+function exportData() {
+  const data = collectAllData();
+  const lines = ['AL RUGAIB — PROCUREMENT ALIGNMENT DATA EXPORT', `Date: ${new Date().toLocaleDateString('en-GB')}`, ''];
+  lines.push('=== SECTION A: 4 PRE-LAUNCH DECISIONS ===');
+  ['1','2','3','4'].forEach(n => {
+    lines.push(`\nDecision ${n}:`);
+    if (data[`a${n}_ans`])   lines.push(`  Answer: ${data[`a${n}_ans`]}`);
+    if (data[`a${n}_rec`])   lines.push(`  Recommendation: ${data[`a${n}_rec`]}`);
+    if (data[`a${n}_agreed`])lines.push(`  Agreed: ${data[`a${n}_agreed`]}`);
+    if (data[`a${n}_date`])  lines.push(`  Date: ${data[`a${n}_date`]}`);
+  });
+  lines.push('\n=== SECTION B: TARGET ALLOCATION ===');
+  ['Alaa','Hakim','Rawan','Gap'].forEach((name, i) => {
+    const n = i + 1;
+    lines.push(`\n${name}: target=${data[`b${n}_tgt`]||'—'} | agreed=${data[`b${n}_agr`]||'—'} | notes=${data[`b${n}_note`]||'—'}`);
+  });
+  lines.push('\n=== ACTIONS STATUS ===');
+  ACTIONS.forEach(a => {
+    const status  = data[a.id + '_status'] || 'Not started';
+    const owner   = data[a.id + '_owner']  || '—';
+    const date    = data[a.id + '_date']   || '—';
+    lines.push(`[${a.pri}] ${a.title}`);
+    lines.push(`  Owner: ${owner} | Due: ${a.deadline} | Status: ${status} | Committed: ${date}`);
+  });
+  const blob = new Blob([lines.join('\n')], { type: 'text/plain' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `AR_Procurement_Alignment_${new Date().toISOString().split('T')[0]}.txt`;
+  a.click();
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+  document.getElementById('dateLabel').textContent = new Date().toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  buildBundlingRows();
+  buildActions();
+  await loadSaved();
+  updateProgress();
+  updateCounts();
+
+  // Auto-save on change
+  document.querySelectorAll('input, textarea, select').forEach(el => {
+    el.addEventListener('change', () => { updateProgress(); updateCounts(); });
+  });
+});
+</script>
+</body>
+</html>
